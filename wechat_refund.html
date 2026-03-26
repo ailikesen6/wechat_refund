@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>微信支付退款通知</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #f1f1f1;
+            /* 模拟背景图中隐约可见的人像背景 */
+            background: linear-gradient(rgba(241, 241, 241, 0.85), rgba(241, 241, 241, 0.85)), 
+                        url('https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=800&q=80');
+            background-size: cover;
+            background-attachment: fixed;
+            font-family: -apple-system, "SF Pro Display", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .wechat-card {
+            background: white;
+            border-radius: 12px;
+            margin: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .refund-amount {
+            font-family: "SF Pro Display", "PingFang SC", sans-serif;
+            letter-spacing: -0.5px;
+        }
+        .label-text {
+            color: #888;
+            width: 80px;
+            flex-shrink: 0;
+        }
+        .value-text {
+            color: #000;
+        }
+        .highlight-text {
+            color: #c0a46b;
+        }
+        .bottom-nav {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid #eeeeee;
+        }
+        .nav-item {
+            position: relative;
+        }
+        .nav-item:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 30%;
+            height: 40%;
+            width: 1px;
+            background-color: #eeeeee;
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-20">
+    <!-- 顶部状态栏模拟 (可选，截图包含) -->
+    <div class="sticky top-0 bg-white/95 backdrop-blur-md flex items-center justify-between px-4 py-3 z-10">
+        <div class="w-6 flex items-center">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6">
+                <path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <div class="text-[17px] font-medium">微信支付</div>
+        <div class="flex space-x-4">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="M21 21l-4.35-4.35"></path>
+            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+        </div>
+    </div>
+
+    <!-- 卡片 1 (简版，只有金额) -->
+    <div class="wechat-card px-4 pt-6 pb-4">
+        <div class="text-center mb-8">
+            <div class="refund-amount text-[32px] font-bold mt-2">¥ 2000.00</div>
+        </div>
+        <div class="space-y-3 text-[15px] px-2">
+            <div class="flex">
+                <span class="label-text">商品详情</span>
+                <span class="value-text">乐学人生付费专栏</span>
+            </div>
+            <div class="flex">
+                <span class="label-text">商户名称</span>
+                <span class="value-text">富海课堂</span>
+            </div>
+            <div class="flex">
+                <span class="label-text">退款方式</span>
+                <span class="highlight-text">退回零钱</span>
+            </div>
+            <div class="flex">
+                <span class="label-text">到账时间</span>
+                <span class="value-text">2026年3月17日 16:54:23</span>
+            </div>
+        </div>
+        <div class="mt-8 pt-4 border-t border-gray-100 flex justify-between items-center text-[15px] text-gray-800 px-2">
+            <span>查看退款详情</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4 text-gray-300">
+                <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- 卡片 2 (完整版) -->
+    <div class="wechat-card px-4 pt-6 pb-4">
+        <div class="text-[17px] font-medium mb-8 px-2">退款到账通知</div>
+        <div class="text-center mb-10">
+            <div class="text-gray-400 text-[13px]">退款金额</div>
+            <div class="refund-amount text-[32px] font-bold mt-1">¥ 4000.00</div>
+        </div>
+        <div class="space-y-3 text-[15px] px-2">
+            <div class="flex">
+                <span class="label-text">商品详情</span>
+                <span class="value-text">乐学人生付费专栏</span>
+            </div>
+            <div class="flex">
+                <span class="label-text">商户名称</span>
+                <span class="value-text">富海课堂</span>
+            </div>
+            <div class="flex">
+                <span class="label-text">退款方式</span>
+                <span class="highlight-text">退回零钱</span>
+            </div>
+            <div class="flex">
+                <span class="label-text">到账时间</span>
+                <span class="value-text">2026年3月17日 16:54:25</span>
+            </div>
+        </div>
+        <div class="mt-8 pt-4 border-t border-gray-100 flex justify-between items-center text-[15px] text-gray-800 px-2">
+            <span>查看退款详情</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4 text-gray-300">
+                <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- 卡片 3 (部分显示) -->
+    <div class="wechat-card px-4 pt-6 pb-4 mb-20">
+        <div class="text-[17px] font-medium mb-8 px-2">退款到账通知</div>
+        <div class="text-center mb-10">
+            <div class="text-gray-400 text-[13px]">退款金额</div>
+            <div class="refund-amount text-[32px] font-bold mt-1">¥ 4000.00</div>
+        </div>
+    </div>
+
+    <!-- 底部导航栏 -->
+    <div class="fixed bottom-0 left-0 right-0 bottom-nav flex items-center h-[54px] text-[15px] text-[#1a1a1a]">
+        <div class="flex-[1.2] flex justify-center items-center nav-item">
+            <div class="bg-[#1a1a1a] rounded-[4px] p-[2px]">
+                <svg viewBox="0 0 24 24" fill="white" class="w-[18px] h-[18px]">
+                    <path d="M20 7H4v10h16V7zM4 5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2H4z"/>
+                    <path d="M7 10h2v2H7v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2zm-8 4h10v1H7v-1z"/>
+                </svg>
+            </div>
+        </div>
+        <div class="flex-[2.5] flex justify-center items-center nav-item font-normal">我的账单</div>
+        <div class="flex-[2.5] flex justify-center items-center nav-item font-normal">支付服务</div>
+        <div class="flex-[2.5] flex justify-center items-center font-normal">摇优惠</div>
+    </div>
+</body>
+</html>
